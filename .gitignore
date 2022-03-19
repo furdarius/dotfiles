@@ -1,0 +1,13 @@
+.AppleDouble
+.DS_Store
+.LSOverride
+
+# personal swap gitconfigs
+homedir/.vim/backup/*
+!homedir/.vim/backup/.gitignore
+homedir/.vim/temp/*
+!homedir/.vim/temp/.gitignore
+homedir/.vim/plugged/*
+!homedir/.vim/plugged/.gitignore
+homedir/.vim/autoload/*
+!homedir/.vim/autoload/.gitignore
