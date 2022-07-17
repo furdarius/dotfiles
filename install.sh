@@ -7,6 +7,22 @@ source ./lib_sh/echos.sh
 source ./lib_sh/requirers.sh
 
 # ###########################################################
+# /etc/hosts -- spyware/ad blocking
+# ###########################################################
+read -r -p "Overwrite /etc/hosts with the ad-blocking hosts file from someonewhocares.org? (from ./configs/hosts file) [y|N] " response
+if [[ $response =~ (yes|y|Y) ]];then
+    action "cp /etc/hosts /etc/hosts.backup"
+    sudo cp /etc/hosts /etc/hosts.backup
+    ok
+    action "cp ./configs/hosts /etc/hosts"
+    sudo cp ./configs/hosts /etc/hosts
+    ok
+    bot "Your /etc/hosts file has been updated. Last version is saved in /etc/hosts.backup"
+else
+    ok "skipped";
+fi
+
+# ###########################################################
 # Git Config
 # ###########################################################
 bot "OK, now I am going to update the .gitconfig for your user info:"
@@ -64,7 +80,7 @@ if [[ $? = 0 ]]; then
 
   # test if gnu-sed or MacOS sed
 
-  sed -i "s/GITHUBFULLNAME/$firstname $lastname/" ./homedir/.gitconfig > /dev/null 2>&1 | true
+  sed -i "s/GITHUBFULLNAME/$firstname $lastname/" ./homedir/.gitconfig > /dev/null 2>&1 || true
   if [[ ${PIPESTATUS[0]} != 0 ]]; then
     echo
     running "looks like you are using MacOS sed rather than gnu-sed, accommodating"
@@ -537,6 +553,10 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightC
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true;ok
 
+running "Disable mouse and trackpad acceleration"
+defaults write -g com.apple.trackpad.scaling -1
+defaults write -g com.apple.mouse.scaling -1
+
 running "Disable 'natural' (Lion-style) scrolling"
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false;ok
 
@@ -903,10 +923,8 @@ bot "Terminal & iTerm2"
 defaults write com.apple.terminal FocusFollowsMouse -bool true
 #defaults write org.x.X11 wm_ffm -bool true;ok
 
-running "Installing the Solarized Light theme for iTerm (opening file)"
-open "./configs/Solarized Light.itermcolors";ok
-running "Installing the Patched Solarized Dark theme for iTerm (opening file)"
-open "./configs/Solarized Dark Patch.itermcolors";ok
+running "Installing a color profile for iTerm (opening file)"
+open "./configs/furdarius.itermcolors";ok
 
 running "Don’t display the annoying prompt when quitting iTerm"
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false;ok
@@ -1076,7 +1094,7 @@ for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
   killall "${app}" > /dev/null 2>&1
 done
 
-# brew update && brew upgrade && brew cleanup 
+# brew update && brew upgrade && brew cleanup
 
 bot "Woot! All done. Reboot the terminal."
 bot "You could do \"brew update && brew upgrade && brew cleanup\" to upgrade all the brew dependencies"
