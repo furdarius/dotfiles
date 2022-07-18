@@ -5,6 +5,8 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-commentary'
 Plug 'itchyny/lightline.vim'
+Plug 'preservim/nerdtree'
+Plug 'ekalinin/Dockerfile.vim', {'for' : 'Dockerfile'}
 
 call plug#end()
 
@@ -47,8 +49,15 @@ set clipboard^=unnamedplus
 set undofile
 set undodir=~/.cache/vim
 
+let mapleader = ","
+
 " ==================== lightline ====================
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ }
 
+" ==================== NerdTree ====================
+noremap <Leader>n :NERDTreeToggle<cr>
+noremap <Leader>f :NERDTreeFind<cr>
+
+let NERDTreeShowHidden=1
